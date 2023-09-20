@@ -40,6 +40,8 @@
         form .input-group button {
             margin: auto;
             width: 100px;
+            color: white;
+            border: 0;
             background-color: #0876A6;
         }
 
@@ -53,6 +55,10 @@
             text-decoration: none;
         }
 
+        .images a img {
+            max-width: 200px;
+        }
+
         hr {
             width: 100%;
         }
@@ -60,6 +66,7 @@
         .link-group {
             display: flex;
             flex-direction: column;
+            align-items: center;
             row-gap: .5em;
         }
 
@@ -73,6 +80,8 @@
     <div class="container">
         {{ form_start(qrcode_form) }}
         {{ form_end(qrcode_form) }}
+        {{ form_start(delete_form) }}
+        {{ form_end(delete_form) }}
         <hr>
         <div class="images">
             {% for i in files %}

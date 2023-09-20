@@ -2,9 +2,9 @@
 
 namespace App\Controller;
 
+use App\Form\DeleteType;
 use App\Form\QRCodeType;
 use Endroid\QrCode\Builder\BuilderInterface;
-use Endroid\QrCodeBundle\Response\QrCodeResponse;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -19,6 +19,9 @@ class HomepageController extends AbstractController
     {
         $QRCodeForm = $this->createForm(QRCodeType::class);
         $QRCodeForm->handleRequest($request);
+
+        $deleteForm = $this->createForm(DeleteType::class);
+        $deleteForm->handleRequest($request);
 
         $qrcode_path = $this->getParameter('qr_codes');
 
@@ -53,11 +56,20 @@ class HomepageController extends AbstractController
         }
 
         $files = array_diff(
-            scandir($qrcode_path), ['.', '..', '.gitignore']
+            scandir($qrcode_path, SCANDIR_SORT_DESCENDING), ['.', '..', '.gitignore']
         );
+
+        if ($deleteForm->isSubmitted() and $deleteForm->isValid()) {
+            while ($files) {
+                $file = array_shift($files);
+
+                unlink($qrcode_path . $file);
+            }
+        }
 
         return $this->render('homepage/index.html.twig', [
             'files' => $files,
+            'delete_form' => $deleteForm->createView(),
             'qrcode_form' => $QRCodeForm->createView(),
         ]);
     }

@@ -68,7 +68,7 @@ class HomepageController extends AbstractController
             $fileinfo = pathinfo($file);
 
             $im = new \Imagick();
-            $im->readImage($pngs_path . $file);
+            $im->readImageBlob(file_get_contents($pngs_path . $file));
             $im->setImageFormat('svg');
             $im->writeImage($qrcode_path . $fileinfo['filename'] . ".svg");
             $im->clear();

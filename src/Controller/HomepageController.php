@@ -3,12 +3,14 @@
 namespace App\Controller;
 
 use App\Form\DeleteType;
+use App\Form\DownloadType;
 use App\Form\QRCodeType;
 use Endroid\QrCode\Builder\BuilderInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use ZipArchive;
 
 class HomepageController extends AbstractController
 {
@@ -21,6 +23,7 @@ class HomepageController extends AbstractController
         $QRCodeForm->handleRequest($request);
 
         $deleteForm = $this->createForm(DeleteType::class);
+        $downloadForm = $this->createForm(DownloadType::class);
 
         $pngs_path = $this->getParameter('pngs');
         $qrcode_path = $this->getParameter('qr_codes');
@@ -80,9 +83,52 @@ class HomepageController extends AbstractController
 
         return $this->render('homepage/index.html.twig', [
             'files' => $files,
+            'download_form' => $downloadForm->createView(),
             'delete_form' => $deleteForm->createView(),
             'qrcode_form' => $QRCodeForm->createView(),
         ]);
+    }
+
+    #[Route('/download', name: 'app_download')]
+    public function downloadImages(Request $request): Response
+    {
+        $qrcode_path = $this->getParameter('qr_codes');
+        $public_path = $this->getParameter('public_path');
+
+        $downloadForm = $this->createForm(DownloadType::class);
+        $downloadForm->handleRequest($request);
+
+        $files = array_diff(
+            scandir($qrcode_path, SCANDIR_SORT_DESCENDING), ['.', '..']
+        );
+
+        if ($downloadForm->isSubmitted() and $downloadForm->isValid()) {
+            $zip = new \ZipArchive();
+            $zip->open($public_path . '/archive.zip', \ZipArchive::CREATE|\ZipArchive::OVERWRITE);
+
+            while ($files) {
+                $file = array_shift($files);
+
+                $zip->addFile($qrcode_path . $file, $file);
+            }
+
+            $zip->close();
+        }
+
+        $response = new Response();
+
+        $response->headers->set('Content-type', 'application/octet-stream');
+
+        $response->headers->set('Content-Disposition', sprintf(
+            'attachment; filename="%s"', 'archive.zip'
+        ));
+
+        $response->setContent(file_get_contents($public_path . '/archive.zip'));
+        $response->setStatusCode(200);
+        $response->headers->set('Content-Transfer-Encoding', 'binary');
+        $response->headers->set('Pragma', 'no-cache');
+        $response->headers->set('Expires', '0');
+        return $response;
     }
 
     #[Route('/delete_images', name: 'app_delete')]

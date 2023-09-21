@@ -82,6 +82,8 @@
         {{ form_end(qrcode_form) }}
         {{ form_start(delete_form, {'method' : 'POST', 'action' : path('app_delete')}) }}
         {{ form_end(delete_form) }}
+        {{ form_start(download_form, {'method' : 'POST', 'action' : path('app_download')}) }}
+        {{ form_end(download_form) }}
         <hr>
         <div class="images">
             {% for i in files %}

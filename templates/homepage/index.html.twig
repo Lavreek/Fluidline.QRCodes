@@ -80,7 +80,7 @@
     <div class="container">
         {{ form_start(qrcode_form) }}
         {{ form_end(qrcode_form) }}
-        {{ form_start(delete_form) }}
+        {{ form_start(delete_form, {'method' : 'POST', 'action' : path('app_delete')}) }}
         {{ form_end(delete_form) }}
         <hr>
         <div class="images">

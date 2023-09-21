@@ -1,6 +1,7 @@
 /.idea
 /public_html
 /public/qrcodes
+/public/pngs
 
 ###> symfony/framework-bundle ###
 /.env.local

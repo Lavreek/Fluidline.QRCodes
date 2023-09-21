@@ -21,12 +21,14 @@ class HomepageController extends AbstractController
         $QRCodeForm->handleRequest($request);
 
         $deleteForm = $this->createForm(DeleteType::class);
-        $deleteForm->handleRequest($request);
 
+        $pngs_path = $this->getParameter('pngs');
         $qrcode_path = $this->getParameter('qr_codes');
 
-        if (!is_dir($qrcode_path)) {
-            mkdir($qrcode_path, recursive: true);
+        foreach ([$pngs_path, $qrcode_path] as $dir) {
+            if (!is_dir($dir)) {
+                mkdir($dir, recursive: true);
+            }
         }
 
         if ($QRCodeForm->isSubmitted() and $QRCodeForm->isValid()) {
@@ -51,12 +53,48 @@ class HomepageController extends AbstractController
                 ;
 
                 $search = ['/', '\\', ':', '*', '?', '"', '<', '>', '|', 'http', 'https'];
-                $qrcode->saveToFile($qrcode_path . time() .'-'. str_replace($search, '', $data) . ".png");
+                $qrcode->saveToFile($pngs_path . time() .'-'. str_replace($search, '', $data) . ".png");
             }
         }
 
+        $pngsFiles = array_diff(
+            scandir($pngs_path, SCANDIR_SORT_DESCENDING), ['.', '..']
+        );
+
+        foreach ($pngsFiles as $file) {
+            $fileinfo = pathinfo($file);
+
+            $im = new \Imagick();
+            $im->readImage($pngs_path . $file);
+            $im->setImageFormat('svg');
+            $im->writeImage($qrcode_path . $fileinfo['filename'] . ".svg");
+            $im->clear();
+            $im->destroy();
+
+            unlink($pngs_path . $file);
+        }
+
         $files = array_diff(
-            scandir($qrcode_path, SCANDIR_SORT_DESCENDING), ['.', '..', '.gitignore']
+            scandir($qrcode_path, SCANDIR_SORT_DESCENDING), ['.', '..']
+        );
+
+        return $this->render('homepage/index.html.twig', [
+            'files' => $files,
+            'delete_form' => $deleteForm->createView(),
+            'qrcode_form' => $QRCodeForm->createView(),
+        ]);
+    }
+
+    #[Route('/delete_images', name: 'app_delete')]
+    public function deleteImages(Request $request): Response
+    {
+        $qrcode_path = $this->getParameter('qrcodes');
+
+        $deleteForm = $this->createForm(DeleteType::class);
+        $deleteForm->handleRequest($request);
+
+        $files = array_diff(
+            scandir($qrcode_path, SCANDIR_SORT_DESCENDING), ['.', '..']
         );
 
         if ($deleteForm->isSubmitted() and $deleteForm->isValid()) {
@@ -67,10 +105,6 @@ class HomepageController extends AbstractController
             }
         }
 
-        return $this->render('homepage/index.html.twig', [
-            'files' => $files,
-            'delete_form' => $deleteForm->createView(),
-            'qrcode_form' => $QRCodeForm->createView(),
-        ]);
+        return $this->redirectToRoute('app_home');
     }
 }

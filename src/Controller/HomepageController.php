@@ -88,7 +88,7 @@ class HomepageController extends AbstractController
     #[Route('/delete_images', name: 'app_delete')]
     public function deleteImages(Request $request): Response
     {
-        $qrcode_path = $this->getParameter('qrcodes');
+        $qrcode_path = $this->getParameter('qr_codes');
 
         $deleteForm = $this->createForm(DeleteType::class);
         $deleteForm->handleRequest($request);

@@ -55,8 +55,7 @@ class HomepageController extends AbstractController
                     ->build()
                 ;
 
-                $search = ['/', '\\', ':', '*', '?', '"', '<', '>', '|', 'http', 'https'];
-                $qrcode->saveToFile($pngs_path . time() .'-'. str_replace($search, '', $data) . ".png");
+                $qrcode->saveToFile($pngs_path . $serial . ".png");
             }
         }
 

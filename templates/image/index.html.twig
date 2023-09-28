@@ -1,16 +1,8 @@
-<!DOCTYPE html>
-<html>
-    <head>
-        <meta charset="UTF-8">
-        <title>{% block title %}Welcome!{% endblock %}</title>
-        <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text></svg>">
-        {% block stylesheets %}
-        {% endblock %}
+{% extends 'base.html.twig' %}
 
-        {% block javascripts %}
-        {% endblock %}
-    </head>
-    <body>
+{% block title %}FL QR Code generator!{% endblock %}
+
+{% block body %}
     <style>
         body {
             min-width: 320px;
@@ -85,6 +77,18 @@
             color: black;
         }
     </style>
-        {% block body %}{% endblock %}
-    </body>
-</html>
+    <div class="container">
+        {{ form_start(png_form) }}
+        {{ form_end(png_form) }}
+        <hr>
+        <div class="images">
+            {% for i in files %}
+                <a class="link-group" href="/svgs/{{ i }}" download="{{ i }}">
+                    <img src="/qrcodes/{{ i }}" alt="QR">
+                    <p>{{ i }}</p>
+                </a>
+            {% endfor %}
+        </div>
+    </div>
+
+{% endblock %}

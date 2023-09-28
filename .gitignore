@@ -2,6 +2,7 @@
 /public_html
 /public/qrcodes
 /public/pngs
+/public/svgs
 
 ###> symfony/framework-bundle ###
 /.env.local

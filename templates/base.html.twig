@@ -9,82 +9,151 @@
 
         {% block javascripts %}
         {% endblock %}
+
+        <style>
+            body {
+                min-width: 320px;
+            }
+
+            .container {
+                display: flex;
+                flex-direction: column;
+                row-gap: 2em;
+                margin: 2% 10%;
+                width: 100%;
+            }
+
+            form {
+                width: 100%;
+                max-width: 320px;
+                display: flex;
+                flex-direction: column;
+                row-gap: 2em;
+                margin: auto;
+            }
+
+            form .input-group {
+                display: flex;
+                flex-direction: column;
+                row-gap: .5em;
+            }
+
+            .input-group input, .input-group button {
+                border-radius: 12px;
+                font-family: monospace;
+                font-size: 16px;
+                padding: 6px 12px;
+                border: 1px solid grey;
+            }
+
+            form .input-group button {
+                margin: auto;
+                width: 100px;
+                color: white;
+                border: 0;
+                background-color: #0876A6;
+            }
+
+            .images {
+                display: flex;
+                flex-wrap: wrap;
+            }
+
+            .images a {
+                padding: 8px 12px;
+                text-decoration: none;
+            }
+
+            .images a img {
+                max-width: 200px;
+            }
+
+            hr {
+                width: 100%;
+            }
+
+            .link-group {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                row-gap: .5em;
+            }
+
+            .link-group p {
+                font-size: 16px;
+                font-family: monospace;
+                text-decoration: none;
+                color: black;
+            }
+
+            .container-flex {
+                display: flex;
+                flex-wrap: wrap;
+                width: 100%;
+            }
+
+            .navigation {
+                display: flex;
+                flex-direction: column;
+                width: 320px;
+            }
+
+            .navigation a {
+                padding: 6px 12px;
+                font-size: 16px;
+                font-family: monospace;
+                text-decoration: none;
+            }
+
+            .main-section {
+                display: flex;
+                width: calc(100% - 320px);
+            }
+
+            .text-warning {
+                font-family: monospace;
+                font-size: 14px;
+            }
+
+            p {
+                padding: 0;
+                margin: 0;
+            }
+
+            .d-flex {
+                display: flex;
+            }
+
+            .justify-content-center {
+                justify-content: center;
+            }
+
+            .align-items-center {
+                align-items: center;
+            }
+
+            .flex-column {
+                flex-direction: column;
+            }
+        </style>
     </head>
     <body>
-    <style>
-        body {
-            min-width: 320px;
-        }
-
-        .container {
-            display: grid;
-            row-gap: 2em;
-            margin: 2% 10%;
-        }
-
-        form {
-            width: 100%;
-            max-width: 320px;
-            display: flex;
-            flex-direction: column;
-            row-gap: 2em;
-            margin: auto;
-        }
-
-        form .input-group {
-            display: flex;
-            flex-direction: column;
-            row-gap: .5em;
-        }
-
-        .input-group input, .input-group button {
-            border-radius: 12px;
-            font-family: monospace;
-            font-size: 16px;
-            padding: 6px 12px;
-            border: 1px solid grey;
-        }
-
-        form .input-group button {
-            margin: auto;
-            width: 100px;
-            color: white;
-            border: 0;
-            background-color: #0876A6;
-        }
-
-        .images {
-            display: flex;
-            flex-wrap: wrap;
-        }
-
-        .images a {
-            padding: 8px 12px;
-            text-decoration: none;
-        }
-
-        .images a img {
-            max-width: 200px;
-        }
-
-        hr {
-            width: 100%;
-        }
-
-        .link-group {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            row-gap: .5em;
-        }
-
-        .link-group p {
-            font-size: 16px;
-            font-family: monospace;
-            text-decoration: none;
-            color: black;
-        }
-    </style>
-        {% block body %}{% endblock %}
+        <div class="container-flex">
+            <div class="navigation">
+                <a href="{{ path('app_serial_to_svg') }}">Серия в SVG</a>
+                <a href="{{ path('app_png_to_svg') }}">Изображение в SVG</a>
+                <hr>
+                <div class="text-warning">
+                    <p>Обратите особое внимание:</p>
+                    <ul>
+                        <li>Формат загружаемого изображения <b>.png</b></li>
+                        <li>Фон загружаемого изображения <b>белый</b></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="main-section">
+                {% block body %}{% endblock %}
+            </div>
+        </div>
     </body>
 </html>

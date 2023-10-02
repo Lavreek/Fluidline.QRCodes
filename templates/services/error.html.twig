@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}FL SVG generator!{% endblock %}
+
+{% block body %}
+    <div class="d-flex justify-content-center align-items-center flex-column">
+        <h1>{{ exception_handler }}</h1>
+        <h3>{{ message }} at line: {{ line }}</h3>
+        <h5>{{ trace }}</h5>
+    </div>
+{% endblock %}

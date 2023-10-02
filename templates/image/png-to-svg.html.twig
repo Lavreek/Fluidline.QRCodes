@@ -1,0 +1,20 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}FL PNG TO SVG converter{% endblock %}
+
+{% block body %}
+    <div class="container">
+        {{ form_start(png_form) }}
+        {{ form_end(png_form) }}
+        <hr>
+        <div class="images">
+            {% for i in files %}
+                <a class="link-group" href="/svgs/{{ i }}" download="{{ i }}">
+                    <img src="/qrcodes/{{ i }}" alt="QR">
+                    <p>{{ i }}</p>
+                </a>
+            {% endfor %}
+        </div>
+    </div>
+
+{% endblock %}
